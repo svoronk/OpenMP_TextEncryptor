@@ -72,7 +72,7 @@ int main()
     //3. Paleidžia pasirinktą kiekį darbininkių gijų 2 ≤ x ≤ n/4 (n — duomenų kiekis faile).
     omp_set_num_threads(WorkerCount);
     float sum;
-#pragma omp parallel reduction(+:sum)
+#pragma omp parallel
     {
         auto total_threads = omp_get_num_threads();
         sum = total_threads;
