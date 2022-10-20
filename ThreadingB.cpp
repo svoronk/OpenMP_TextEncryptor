@@ -32,11 +32,7 @@ void PopulateSubVectors(vector<vector<SelectedDataStructure>>& subvectors);
 void Encrypt(vector<SelectedDataStructure> data);
 string EncryptOneDataPoint(string string_line, bool EncryptedOne);
 string ConvertToString(char* a, int size);
-bool containsOnlyLetters(std::string const& str);
-
-bool SortByNumber(SelectedDataStructureWithComputedValue& a, SelectedDataStructureWithComputedValue& b) {
-    return a.LinePosition < b.LinePosition;
-}
+bool containsOnlyLetters(string const& str);
 #pragma endregion
 
 const string Input = "IFF01_VoronkeviciusS_L1_dat_1.txt";
