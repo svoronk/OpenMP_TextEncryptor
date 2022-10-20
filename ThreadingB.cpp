@@ -6,6 +6,9 @@
 #include <algorithm>
 #include <omp.h>
 #include <regex>
+#include <cstdio>
+#include <iomanip>
+using std::setw;
 using namespace std;
 
 struct SelectedDataStructure {
@@ -18,11 +21,12 @@ struct SelectedDataStructureWithComputedValue {
     int LinePosition;
 };
 
-void Reader();
+void ReadData();
 string EncryptOneDataPoint(string string_line, bool EncryptedOne);
 string ConvertToString(char* a, int size);
 void Encrypt(vector<SelectedDataStructure> data);
 bool containsOnlyLetters(std::string const& str);
+void WriteData();
 
 bool SortByNumber(SelectedDataStructureWithComputedValue& a, SelectedDataStructureWithComputedValue& b) {
     return a.LinePosition < b.LinePosition;
@@ -36,7 +40,7 @@ int WorkerCount;
 int main()
 {
     //1. Nuskaito duomenų failą į lokalų masyvą, sąrašą ar kitą duomenų struktūrą;
-    Reader();
+    ReadData();
 
     //2. Padaliname vieną sarašą į daug atitinkamo dydžio sąrašų gijoms apdoroti
     WorkerCount = (selectedDataList.size() / 4) < 2 ? 2 : selectedDataList.size() / 4;
@@ -67,8 +71,11 @@ int main()
 
     //3. Paleidžia pasirinktą kiekį darbininkių gijų 2 ≤ x ≤ n/4 (n — duomenų kiekis faile).
     omp_set_num_threads(WorkerCount);
-#pragma omp parallel
+    float sum;
+#pragma omp parallel reduction(+:sum)
     {
+        auto total_threads = omp_get_num_threads();
+        sum = total_threads;
         vector<SelectedDataStructure> sub_vec;
 #pragma omp critical
         {
@@ -77,10 +84,12 @@ int main()
         }
         Encrypt(sub_vec);
     }
-    //4. Iš rezultatų monitoriaus, kuriame saugomi gauti atfiltruoti rezultatai, rezultatus išveda į tekstinį failą lentele.
+
+    //4. Rezultatus išvedame į tekstinio failo lentele.
+    WriteData();
 }
 
-void Reader()
+void ReadData()
 {
     string myText;
     ifstream MyReadFile("Input.txt");
@@ -93,6 +102,24 @@ void Reader()
         count++;
     }
     MyReadFile.close();
+}
+void WriteData()
+{
+    ofstream myfile;
+    myfile.open("Output.txt");
+    for (size_t i = 0; i < 97; i++)
+    myfile << "-";
+    myfile << "\n|" << setw(35) << "Encrypted Text" << " |" << setw(35) << "Decrypted Text" << " |" << setw(20) << "Position" << " |" << endl;
+    for (size_t i = 0; i < 97; i++)
+        myfile << "-";
+    for (SelectedDataStructureWithComputedValue item : selectedResultList)
+    {
+        myfile << "\n|" << setw(35) << item.EncryptedText << " |" << setw(35) << item.DecryptedText << " |" << setw(20) << item.LinePosition << " |";
+    }
+    myfile << "\n";
+    for (size_t i = 0; i < 97; i++)
+        myfile << "-";
+    myfile.close();
 }
 
 void Encrypt(vector<SelectedDataStructure> data)
