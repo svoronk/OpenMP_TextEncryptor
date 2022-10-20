@@ -26,9 +26,10 @@ struct SelectedDataStructureWithComputedValue {
 
 #pragma region Methods
 void ReadData();
+void WriteData();
+void InsertionSort(vector<SelectedDataStructureWithComputedValue>& data, SelectedDataStructureWithComputedValue n);
 void PopulateSubVectors(vector<vector<SelectedDataStructure>>& subvectors);
 void Encrypt(vector<SelectedDataStructure> data);
-void WriteData();
 string EncryptOneDataPoint(string string_line, bool EncryptedOne);
 string ConvertToString(char* a, int size);
 bool containsOnlyLetters(std::string const& str);
@@ -38,12 +39,11 @@ bool SortByNumber(SelectedDataStructureWithComputedValue& a, SelectedDataStructu
 }
 #pragma endregion
 
-const string Input = "IFF01_VoronkeviciusS_L1_dat_3.txt";
+const string Input = "IFF01_VoronkeviciusS_L1_dat_1.txt";
 const string Output = "IFF01_VoronkeviciusS_L1_rez.txt";
 vector<SelectedDataStructure> selectedDataList;
 vector<SelectedDataStructureWithComputedValue> selectedResultList;
 int WorkerCount;
-
 
 int main()
 {
@@ -111,13 +111,40 @@ void Encrypt(vector<SelectedDataStructure> data)
         {
 #pragma omp critical
             {
-                selectedResultList.push_back(value);
-                std::sort(selectedResultList.begin(), selectedResultList.end(), SortByNumber);
+                //selectedResultList.push_back(value);
+                //std::sort(selectedResultList.begin(), selectedResultList.end(), SortByNumber);
+                InsertionSort(selectedResultList, value);
             }
         }
     }
 }
+void InsertionSort(vector<SelectedDataStructureWithComputedValue>& data, SelectedDataStructureWithComputedValue n)
+{
+    if (data.empty())
+    {
+        data.push_back(n);
+        return;
+    }
+    if (data.front().LinePosition >= n.LinePosition)
+    {
+        data.insert(data.begin() + 0, n);
+        return;
+    }
+    if (data.back().LinePosition <= n.LinePosition)
+    {
+        data.insert(data.end(), n);
+        return;
+    }
 
+    for (int i = 0; i < data.size(); i++)
+    {
+        if (data[i].LinePosition <= n.LinePosition && data[i+1].LinePosition >= n.LinePosition )
+        {
+            data.insert(data.begin() + i+1, n);
+            return;
+        }
+    }
+}
 string EncryptOneDataPoint(string string_line, bool EncryptedOne)
 {
     //string string_line = "ashard";

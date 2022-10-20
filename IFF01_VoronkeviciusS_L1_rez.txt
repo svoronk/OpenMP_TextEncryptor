@@ -1,4 +1,29 @@
 -------------------------------------------------------------------------------------------------
 |                     Encrypted Text |                     Decrypted Text |            Position |
 -------------------------------------------------------------------------------------------------
+|                             Xkgpcu |                             Vienas |                   0 |
+|                            Fwnmgug |                            Dulkese |                   1 |
+|                               Vt{u |                               Trys |                   2 |
+|                             Mgvwtk |                             Keturi |                   3 |
+|                              Rgpmk |                              Penki |                   4 |
+|                            Ugugvcu |                            Sesetas |                   5 |
+|                            Ugrv{pk |                            Septyni |                   6 |
+|                            Cuvwqpk |                            Astuoni |                   7 |
+|                             Fgx{pk |                             Devyni |                   8 |
+|                             Fgukov |                             Desimt |                   9 |
+|                         Xkgpwqnkmc |                         Vienuolika |                  10 |
+|                            Fx{nkmc |                            Dvylika |                  11 |
+|                            Vt{nkmc |                            Trylika |                  12 |
+|                        Mgvwtkqnkmc |                        Keturiolika |                  13 |
+|                         Rgpmkqnkmc |                         Penkiolika |                  14 |
+|                          Ugukqnkmc |                          Sesiolika |                  15 |
+|                       Ugrv{pkqnkmc |                       Septyniolika |                  16 |
+|                       Cuvwqpkqnkmc |                       Astuoniolika |                  17 |
+|                        Fgx{pkqnkmc |                        Devyniolika |                  18 |
+|                          Fxkfgukov |                          Dvidesimt |                  19 |
+|                   Fxkfgukov"xkgpcu |                   Dvidesimt vienas |                  20 |
+|                       Fxkfgukov"fw |                       Dvidesimt du |                  21 |
+|                     Fxkfgukov"vt{u |                     Dvidesimt trys |                  22 |
+|                   Fxkfgukov"mgvwtk |                   Dvidesimt keturi |                  23 |
+|                    Fxkfgukov"rgpmk |                    Dvidesimt penki |                  24 |
 -------------------------------------------------------------------------------------------------
