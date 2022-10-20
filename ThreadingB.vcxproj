@@ -131,8 +131,10 @@
     <ClCompile Include="ThreadingB.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Input.txt" />
-    <Text Include="Output.txt" />
+    <Text Include="IFF01_VoronkeviciusS_L1_dat_1.txt" />
+    <Text Include="IFF01_VoronkeviciusS_L1_dat_3.txt" />
+    <Text Include="IFF01_VoronkeviciusS_L1_rez.txt" />
+    <Text Include="IFF01_VoronkeviciusS_L1_dat_2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,6 +11,8 @@
 using std::setw;
 using namespace std;
 
+#pragma region Structures
+
 struct SelectedDataStructure {
     string StringProperty;
     int LinePosition;
@@ -20,18 +22,24 @@ struct SelectedDataStructureWithComputedValue {
     string EncryptedText;
     int LinePosition;
 };
+#pragma endregion
 
+#pragma region Methods
 void ReadData();
+void PopulateSubVectors(vector<vector<SelectedDataStructure>>& subvectors);
+void Encrypt(vector<SelectedDataStructure> data);
+void WriteData();
 string EncryptOneDataPoint(string string_line, bool EncryptedOne);
 string ConvertToString(char* a, int size);
-void Encrypt(vector<SelectedDataStructure> data);
 bool containsOnlyLetters(std::string const& str);
-void WriteData();
 
 bool SortByNumber(SelectedDataStructureWithComputedValue& a, SelectedDataStructureWithComputedValue& b) {
     return a.LinePosition < b.LinePosition;
 }
+#pragma endregion
 
+const string Input = "IFF01_VoronkeviciusS_L1_dat_3.txt";
+const string Output = "IFF01_VoronkeviciusS_L1_rez.txt";
 vector<SelectedDataStructure> selectedDataList;
 vector<SelectedDataStructureWithComputedValue> selectedResultList;
 int WorkerCount;
@@ -44,16 +52,34 @@ int main()
 
     //2. Padaliname vieną sarašą į daug atitinkamo dydžio sąrašų gijoms apdoroti
     WorkerCount = (selectedDataList.size() / 4) < 2 ? 2 : selectedDataList.size() / 4;
-    //cout << selectedDataList.size() << " " << WorkerCount << endl;
-    
+    vector<vector<SelectedDataStructure>> subvectors(WorkerCount);
+    PopulateSubVectors(subvectors);
+
+    //3. Paleidžia pasirinktą kiekį darbininkių gijų 2 ≤ x ≤ n/4 (n — duomenų kiekis faile).
+    omp_set_num_threads(WorkerCount);
+    int sum = 0;
+#pragma omp parallel reduction(+:sum)
+    {
+        auto total_threads = omp_get_num_threads();
+        vector<SelectedDataStructure> sub_vec;
+#pragma omp critical
+        {
+            sub_vec = subvectors.front();
+            subvectors.erase(subvectors.begin());
+            sum += total_threads;
+        }
+        Encrypt(sub_vec);
+    }
+
+    //4. Rezultatus išvedame į tekstinio failo lentele.
+    WriteData();
+}
+
+void PopulateSubVectors(vector<vector<SelectedDataStructure>>& subvectors)
+{
     int subpart_of_vector = selectedDataList.size() / WorkerCount;
     int module_of_vector = selectedDataList.size() % WorkerCount;
-    //cout << "division: " << subpart_of_vector << endl;
-    //cout << "module: " << module_of_vector << endl;
-
-
     int counter = 0;
-    vector<vector<SelectedDataStructure>> subvectors(WorkerCount);
     for (vector<SelectedDataStructure>& sub_vec : subvectors)
     {
         for (auto i = 0; i < subpart_of_vector; i++)
@@ -68,58 +94,6 @@ int main()
             module_of_vector--;
         }
     }
-
-    //3. Paleidžia pasirinktą kiekį darbininkių gijų 2 ≤ x ≤ n/4 (n — duomenų kiekis faile).
-    omp_set_num_threads(WorkerCount);
-    float sum;
-#pragma omp parallel
-    {
-        auto total_threads = omp_get_num_threads();
-        sum = total_threads;
-        vector<SelectedDataStructure> sub_vec;
-#pragma omp critical
-        {
-            sub_vec = subvectors.front();
-            subvectors.erase(subvectors.begin());
-        }
-        Encrypt(sub_vec);
-    }
-
-    //4. Rezultatus išvedame į tekstinio failo lentele.
-    WriteData();
-}
-
-void ReadData()
-{
-    string myText;
-    ifstream MyReadFile("Input.txt");
-    int count = 0;
-    while (getline(MyReadFile, myText)) {
-        SelectedDataStructure data;
-        data.StringProperty = myText;
-        data.LinePosition = count;
-        selectedDataList.push_back(data);
-        count++;
-    }
-    MyReadFile.close();
-}
-void WriteData()
-{
-    ofstream myfile;
-    myfile.open("Output.txt");
-    for (size_t i = 0; i < 97; i++)
-    myfile << "-";
-    myfile << "\n|" << setw(35) << "Encrypted Text" << " |" << setw(35) << "Decrypted Text" << " |" << setw(20) << "Position" << " |" << endl;
-    for (size_t i = 0; i < 97; i++)
-        myfile << "-";
-    for (SelectedDataStructureWithComputedValue item : selectedResultList)
-    {
-        myfile << "\n|" << setw(35) << item.EncryptedText << " |" << setw(35) << item.DecryptedText << " |" << setw(20) << item.LinePosition << " |";
-    }
-    myfile << "\n";
-    for (size_t i = 0; i < 97; i++)
-        myfile << "-";
-    myfile.close();
 }
 
 void Encrypt(vector<SelectedDataStructure> data)
@@ -187,3 +161,41 @@ bool containsOnlyLetters(std::string const& str) {
     return str.find_first_not_of(" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") ==
         std::string::npos;
 }
+
+#pragma region IO
+
+void ReadData()
+{
+    string myText;
+    ifstream MyReadFile(Input);
+    int count = 0;
+    while (getline(MyReadFile, myText)) {
+        SelectedDataStructure data;
+        data.StringProperty = myText;
+        data.LinePosition = count;
+        selectedDataList.push_back(data);
+        count++;
+    }
+    MyReadFile.close();
+}
+
+void WriteData()
+{
+    ofstream myfile;
+    myfile.open(Output);
+    for (size_t i = 0; i < 97; i++)
+        myfile << "-";
+    myfile << "\n|" << setw(35) << "Encrypted Text" << " |" << setw(35) << "Decrypted Text" << " |" << setw(20) << "Position" << " |" << endl;
+    for (size_t i = 0; i < 97; i++)
+        myfile << "-";
+    for (SelectedDataStructureWithComputedValue item : selectedResultList)
+    {
+        myfile << "\n|" << setw(35) << item.EncryptedText << " |" << setw(35) << item.DecryptedText << " |" << setw(20) << item.LinePosition << " |";
+    }
+    myfile << "\n";
+    for (size_t i = 0; i < 97; i++)
+        myfile << "-";
+    myfile.close();
+}
+
+#pragma endregion

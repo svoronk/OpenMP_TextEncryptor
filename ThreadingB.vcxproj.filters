@@ -20,10 +20,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Input.txt">
+    <Text Include="IFF01_VoronkeviciusS_L1_dat_1.txt">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="Output.txt">
+    <Text Include="IFF01_VoronkeviciusS_L1_rez.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="IFF01_VoronkeviciusS_L1_dat_2.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="IFF01_VoronkeviciusS_L1_dat_3.txt">
       <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
